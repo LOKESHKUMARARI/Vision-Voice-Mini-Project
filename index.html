@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+    body { 
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column; /* Set flex-direction to column */
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #1a1a1a, #2c2c2c); /* Modern gradient background */
+        color: #ffffff; /* White text */
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; /* Modern font stack */
+        overflow: hidden; /* Prevent scrollbars */
+    }
+    
+    h1 {
+        margin-bottom: 20px; /* Add some space below the heading */
+        font-size: 3.5rem; /* Larger, bold heading */
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        text-transform: uppercase; /* Modern touch */
+        background: linear-gradient(to right, #ffffff, #a0a0a0); /* Gradient text */
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: fadeIn 1.5s ease-in-out; /* Subtle fade-in animation */
+        position: relative;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, #007bff, #00ddeb); /* Accent underline */
+        border-radius: 2px;
+    }
+
+    p {
+        font-size: 24px; /* Adjust font size as needed */
+        font-weight: 300;
+        opacity: 0.8; /* Subtle transparency for hierarchy */
+        animation: slideUp 1.8s ease-in-out; /* Smooth slide-up animation */
+        text-align: center;
+        max-width: 600px; /* Prevent text from stretching too wide */
+        line-height: 1.5; /* Improved readability */
+    }
+
+    /* Keyframe animations for professional feel */
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+        0% { opacity: 0; transform: translateY(30px); }
+        100% { opacity: 0.8; transform: translateY(0); }
+    }
+
+    /* Add a subtle pulsing microphone icon for voice input feedback */
+    body::before {
+        content: '🎙️';
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 2rem;
+        opacity: 0.3;
+        animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 0.3; }
+        50% { transform: scale(1.2); opacity: 0.5; }
+        100% { transform: scale(1); opacity: 0.3; }
+    }
+
+    /* Responsive design for smaller screens */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2.5rem;
+        }
+        p {
+            font-size: 18px;
+            padding: 0 20px;
+        }
+    }
+
+    /* Import modern font from Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
+    </style>
+</head>
+<body>
+    <h1>Listening.....</h1>
+   
+    <script>
+        // Check if browser supports speech recognition
+        if ('webkitSpeechRecognition' in window) {
+            // Create speech recognition object
+            var recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = function(event) {
+                for (var i = event.resultIndex; i < event.results.length; i++) {
+                    var transcript = event.results[i][0].transcript.toLowerCase(); // Convert to lowercase for case-insensitive comparison
+                    console.log('You said: ', transcript);
+                    if (transcript.includes('go to gpt')) {
+                        window.location.href = '/gpt';
+                    } else if (transcript.includes('scan photo')) { // Added elif statement for "scan photo" command
+                        window.location.href = '/scan';
+                    } else if (transcript.includes('scan video')) { // Added elif statement for "scan photo" command
+                        window.location.href = '/scan2';
+                    }
+                }
+            };
+
+            recognition.start();
+        } else {
+            console.log('Speech recognition not supported');
+        }
+    </script>
+</body>
+</html>
