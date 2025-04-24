@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scenery Explanation Result</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e3c72, #2a5298); /* Modern gradient replacing bright green */
+      color: #ffffff; /* White text for contrast */
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; /* Modern font stack */
+      margin: 0; /* Remove default margins */
+      padding: 0;
+      min-height: 100vh; /* Full viewport height */
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* Center content vertically */
+      align-items: center; /* Center content horizontally */
+      overflow: hidden; /* Prevent scrollbars */
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3rem; /* Slightly smaller for elegance */
+      font-weight: 700; /* Bold for emphasis */
+      letter-spacing: -0.02em; /* Tighten spacing for modernity */
+      background: linear-gradient(to right, #ffffff, #d1d5db); /* Gradient text effect */
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: none; /* Remove original text shadow for cleaner look */
+      margin: 20px 0; /* Consistent spacing */
+      animation: fadeIn 1.5s ease-in-out; /* Subtle fade-in animation */
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px; /* Underline width */
+      height: 4px; /* Underline thickness */
+      background: linear-gradient(to right, #3b82f6, #22d3ee); /* Accent gradient */
+      border-radius: 2px; /* Rounded edges */
+    }
+
+    #audio {
+      display: none; /* Maintain hidden audio element */
+    }
+
+    /* Subtle audio wave indicator for professional feedback */
+    body::before {
+      content: '🔊';
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 2rem;
+      opacity: 0.3;
+      animation: pulse 2s infinite ease-in-out; /* Pulsing effect for audio feedback */
+    }
+
+    /* Keyframe animations */
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.2); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 0.3; }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem; /* Smaller heading on mobile */
+        padding: 0 20px; /* Prevent text from touching edges */
+      }
+
+      h1::after {
+        width: 60px; /* Slightly smaller underline */
+      }
+    }
+
+    /* Import modern font */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
+  </style>
+</head>
+<body>
+  <h1>Scenery Explanation Result</h1>
+
+  <!-- Hidden audio element to play the generated audio -->
+  <audio autoplay controls>
+    <source src="{{ url_for('static', filename=audio) }}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+
+  <script>
+    // Play the audio when the page loads
+    window.onload = function() {
+      document.getElementById('audio').play();
+    };
+  </script>
+</body>
+</html>
