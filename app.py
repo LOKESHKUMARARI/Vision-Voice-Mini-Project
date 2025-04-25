@@ -11,7 +11,7 @@ app = Flask(__name__, static_folder='static')
 translator = Translator()
 
 # Set your Gemini API Key securely
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+genai.configure(api_key=os.environ.get("AIzaSyA7aGIzoF9z04C9u_KjlhGkX-vrUFuc1a8"))
 
 @app.route('/')
 def index():
