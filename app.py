@@ -52,7 +52,8 @@ def upload():
         response.resolve()
 
         tts = gTTS(text=response.text, lang='en')
-        tts.save('static/output.mp3')
+        output_path = os.path.join('static', 'output.mp3')
+        tts.save(output_path)
 
         return redirect(url_for('result'))
 
@@ -86,7 +87,8 @@ def upload2():
         print("Translated Text:", translated_text)
 
         tts = gTTS(text=translated_text, lang='ta')
-        tts.save('static/output.mp3')
+        output_path = os.path.join('static', 'output.mp3')
+        tts.save(output_path)
 
         return redirect(url_for('result'))
 
@@ -108,7 +110,9 @@ def gpt():
             response_text = rply.text
 
             tts = gTTS(text=response_text, lang='en')
-            tts.save('static/response.mp3')
+            output_path = os.path.join('static', 'output.mp3')
+            tts.save(output_path)
+
 
             with open("static/response.mp3", "rb") as audio_file:
                 encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
