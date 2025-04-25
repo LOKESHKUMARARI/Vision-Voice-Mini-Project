@@ -13,7 +13,9 @@ app = Flask(__name__, static_folder='static')  # Ensure static folder is configu
 translator = Translator()
 
 # Set your Gemini API Key
-genai.configure(api_key="AIzaSyB4Go6j0e342y5l7mSvzyb4BWTDZFcW7oM")
+ 
+genai.configure(api_key=os.environ.get("AIzaSyB4Go6j0e342y5l7mSvzyb4BWTDZFcW7oM"))
+
 
 # Routes
 @app.route('/')
