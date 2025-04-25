@@ -88,11 +88,11 @@
 <body>
   <h1>Scenery Explanation Result</h1>
 
-  <audio id="audio" controls> 
+   
+  <audio autoplay controls>
     <source src="{{ url_for('static', filename=audio) }}" type="audio/mpeg">
-
-    Your browser does not support the audio element.
-  </audio>
+   
+</audio>
 
   <button id="playAudioButton">Play Audio</button>
 
