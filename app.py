@@ -57,10 +57,12 @@ def upload2():
     try:
         data = request.get_json()
         if not data or 'image' not in data:
+            print("No image data found in request.")
             return jsonify({'error': 'No image data provided'}), 400
 
         image_data = data['image']
-        image_data = image_data.split(',')[1]
+        if ',' in image_data:
+            image_data = image_data.split(',')[1]
         image_binary = base64.b64decode(image_data)
 
         with open('captured_image.png', 'wb') as f:
@@ -69,18 +71,24 @@ def upload2():
         img = PIL.Image.open(io.BytesIO(image_binary))
 
         model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(["Describe the scene in the image using beautiful and simple language", img], stream=True)
+        response = model.generate_content(
+            ["Describe the scene in the image using beautiful and simple language", img],
+            stream=True
+        )
         response.resolve()
 
         translated_text = translator.translate(response.text, dest='ta').text
+        print("Translated Text:", translated_text)
+
         tts = gTTS(text=translated_text, lang='ta')
         tts.save('static/output.mp3')
 
         return redirect(url_for('result'))
+
     except Exception as e:
+        print("ERROR OCCURRED:", str(e))  # This line is crucial
         return jsonify({'error': str(e)}), 500
 
-@app.route('/gpt', methods=['GET', 'POST'])
 def gpt():
     response_text = ""
     audio = ""
