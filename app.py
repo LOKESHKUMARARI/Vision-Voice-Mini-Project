@@ -7,12 +7,15 @@ import os
 import PIL.Image
 from googletrans import Translator
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')  # Ensure static folder is configured
+
+# Configure Translator
 translator = Translator()
 
-# Configure Generative AI
+# Set your Gemini API Key
 genai.configure(api_key="AIzaSyB4Go6j0e342y5l7mSvzyb4BWTDZFcW7oM")
 
+# Routes
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -32,8 +35,7 @@ def upload():
         if not data or 'image' not in data:
             return jsonify({'error': 'No image data provided'}), 400
 
-        image_data = data['image']
-        image_data = image_data.split(',')[1]
+        image_data = data['image'].split(',')[1]
         image_binary = base64.b64decode(image_data)
 
         with open('captured_image.png', 'wb') as f:
@@ -42,14 +44,18 @@ def upload():
         img = PIL.Image.open(io.BytesIO(image_binary))
 
         model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(["Describe the scene in the image using beautiful and simple language", img], stream=True)
+        response = model.generate_content([
+            "Describe the scene in the image using beautiful and simple language", img
+        ])
         response.resolve()
 
         tts = gTTS(text=response.text, lang='en')
         tts.save('static/output.mp3')
 
         return redirect(url_for('result'))
+
     except Exception as e:
+        print("Upload Error:", str(e))
         return jsonify({'error': str(e)}), 500
 
 @app.route('/upload2', methods=['POST'])
@@ -60,9 +66,7 @@ def upload2():
             print("No image data found in request.")
             return jsonify({'error': 'No image data provided'}), 400
 
-        image_data = data['image']
-        if ',' in image_data:
-            image_data = image_data.split(',')[1]
+        image_data = data['image'].split(',')[1]
         image_binary = base64.b64decode(image_data)
 
         with open('captured_image.png', 'wb') as f:
@@ -71,10 +75,9 @@ def upload2():
         img = PIL.Image.open(io.BytesIO(image_binary))
 
         model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(
-            ["Describe the scene in the image using beautiful and simple language", img],
-            stream=True
-        )
+        response = model.generate_content([
+            "Describe the scene in the image using beautiful and simple language", img
+        ])
         response.resolve()
 
         translated_text = translator.translate(response.text, dest='ta').text
@@ -86,12 +89,14 @@ def upload2():
         return redirect(url_for('result'))
 
     except Exception as e:
-        print("ERROR OCCURRED:", str(e))  # This line is crucial
+        print("Upload2 Error:", str(e))
         return jsonify({'error': str(e)}), 500
 
+@app.route('/gpt', methods=['GET', 'POST'])
 def gpt():
     response_text = ""
-    audio = ""
+    encoded_string = ""
+
     if request.method == 'POST':
         transcribed_text = request.form.get('transcribed_text')
 
@@ -101,21 +106,18 @@ def gpt():
             response_text = rply.text
 
             tts = gTTS(text=response_text, lang='en')
-            tts.save('response.mp3')
+            tts.save('static/response.mp3')
 
-            with open("response.mp3", "rb") as audio_file:
+            with open("static/response.mp3", "rb") as audio_file:
                 encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
         else:
             response_text = "No input provided."
-            encoded_string = ""
 
-        return render_template('gpt.html', response=response_text, audio=encoded_string)
-    else:
-        return render_template('gpt.html')
+    return render_template('gpt.html', response=response_text, audio=encoded_string)
 
 @app.route('/result')
 def result():
-    audio_url = "output.mp3"
+    audio_url = url_for('static', filename='output.mp3')
     return render_template('result.html', audio=audio_url)
 
 if __name__ == '__main__':
