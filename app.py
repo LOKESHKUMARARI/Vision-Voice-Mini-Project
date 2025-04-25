@@ -14,7 +14,7 @@ translator = Translator()
 
 # Set your Gemini API Key
  
-genai.configure(api_key=os.environ.get("AIzaSyB4Go6j0e342y5l7mSvzyb4BWTDZFcW7oM"))
+genai.configure(api_key=os.environ.get("AIzaSyA7aGIzoF9z04C9u_KjlhGkX-vrUFuc1a8"))
 
 
 # Routes
