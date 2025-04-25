@@ -88,18 +88,20 @@
 <body>
   <h1>Scenery Explanation Result</h1>
 
-  <audio id="audio" autoplay controls>
+  <audio id="audio" controls>
     <source src="{{ url_for('static', filename=audio) }}" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
+  <button id="playAudioButton">Play Audio</button>
+
   <script>
-    window.onload = function() {
-      const audio = document.getElementById('audio');
-      if (audio) {
-        audio.play().catch(err => console.error("Playback failed:", err));
-      }
-    };
+    document.getElementById('playAudioButton').addEventListener('click', function() {
+      var audioElement = document.getElementById('audio');
+      audioElement.play().catch(function(error) {
+        console.error("Error playing audio:", error);
+      });
+    });
   </script>
 </body>
 </html>
