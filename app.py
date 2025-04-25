@@ -7,17 +7,12 @@ import os
 import PIL.Image
 from googletrans import Translator
 
-app = Flask(__name__, static_folder='static')  # Ensure static folder is configured
-
-# Configure Translator
+app = Flask(__name__, static_folder='static')
 translator = Translator()
 
-# Set your Gemini API Key
- 
-genai.configure(api_key=os.environ.get("AIzaSyA7aGIzoF9z04C9u_KjlhGkX-vrUFuc1a8"))
+# Set your Gemini API Key securely
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
-
-# Routes
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -37,7 +32,7 @@ def upload():
         if not data or 'image' not in data:
             return jsonify({'error': 'No image data provided'}), 400
 
-        image_data = data['image'].split(',')[1]
+        image_data = data['image'].split(',')[1] if ',' in data['image'] else data['image']
         image_binary = base64.b64decode(image_data)
 
         with open('captured_image.png', 'wb') as f:
@@ -66,10 +61,9 @@ def upload2():
     try:
         data = request.get_json()
         if not data or 'image' not in data:
-            print("No image data found in request.")
             return jsonify({'error': 'No image data provided'}), 400
 
-        image_data = data['image'].split(',')[1]
+        image_data = data['image'].split(',')[1] if ',' in data['image'] else data['image']
         image_binary = base64.b64decode(image_data)
 
         with open('captured_image.png', 'wb') as f:
@@ -109,12 +103,11 @@ def gpt():
             rply = model.generate_content("explain in 3 lines " + transcribed_text)
             response_text = rply.text
 
-            tts = gTTS(text=response_text, lang='en')
             output_path = os.path.join('static', 'output.mp3')
+            tts = gTTS(text=response_text, lang='en')
             tts.save(output_path)
 
-
-            with open("static/response.mp3", "rb") as audio_file:
+            with open(output_path, "rb") as audio_file:
                 encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
         else:
             response_text = "No input provided."
@@ -123,8 +116,7 @@ def gpt():
 
 @app.route('/result')
 def result():
-    audio_url = url_for('static', filename='output.mp3')
-    return render_template('result.html', audio=audio_url)
+    return render_template('result.html', audio='output.mp3')
 
 if __name__ == '__main__':
     app.run(debug=True)
